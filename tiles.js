@@ -80,15 +80,13 @@ function addTile(dx, dy, width, height, content) {
     tiles[tileName] = tile;
 }
     
-function initTiles(canvasWidth, canvasHeight, tileWidth, tileHeight, navSize, message) {
-    $('#canvas').css("width", canvasWidth);
-    $('#canvas').css("height", canvasHeight);
+function initTiles(tileWidth, tileHeight, dx, dy, navSize, message) {
+    $('#canvas').css("width", tileWidth * dx);
+    $('#canvas').css("height", tileHeight * dy);
     $('.content').css("width", tileWidth - navSize - 6);
     $('.content').css("height", tileHeight - navSize - 6);
     $('.content').css("padding", (navSize / 2) + 3);
 
-    var dx = canvasWidth / tileWidth;
-    var dy = canvasHeight / tileHeight;
     var index = 0;
     for(var j=0; j < dy; j++) {
         for(var i=0; i < dx; i++) {

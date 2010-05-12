@@ -3,7 +3,7 @@
 .canvas {
     position: absolute;
     background-color: #EEEEEE;
-    border: 2px solid #222222;
+    border: 2px solid #000000;
     z-index: 0;
 }
 
@@ -31,7 +31,7 @@
 .tile {
     position: absolute;
     background-color: #FFFFFF;
-    border: 2px solid #222222;
+    border: 2px solid #444444;
     z-index: 50;
 }
 
