@@ -13,13 +13,12 @@
  */
 
 var tiles = {};
+var emptyX, emptyY = 0;
 var animating = false;
 
 function moveTile(fx, fy, tx, ty, width, height) {
-    if (animating) {
-        alert("Life won't pass you by that fast. Slow down and b r e a t h.");
+    if (animating || (fx == emptyX && fy == emptyY))
         return;
-    }
     var fromName = fx + "" + fy;
     var toName = tx + "" + ty;
     var from = tiles[fromName];
@@ -34,6 +33,8 @@ function moveTile(fx, fy, tx, ty, width, height) {
         function() {
             tiles[toName] = tiles[fromName];
             tiles[fromName] = undefined;
+            emptyX = fx;
+            emptyY = fy;
             animating = false;
         }
     );
@@ -79,6 +80,20 @@ function addTile(dx, dy, width, height, content) {
     tile.css("height", height - 4)
     tiles[tileName] = tile;
 }
+
+function initTileKeyHandler(dx, dy, width, height) {
+    emptyX, emptyY = 0;
+    $(document).keypress(function(event) {
+        if (event.keyCode == '37' && emptyX < dx - 1)
+            moveTile(emptyX + 1, emptyY, emptyX, emptyY, width, height);
+        if (event.keyCode == '38' && emptyY < dy - 1)
+            moveTile(emptyX, emptyY + 1, emptyX, emptyY, width, height);
+        if (event.keyCode == '39' && emptyX > 0)
+            moveTile(emptyX - 1, emptyY, emptyX, emptyY, width, height);
+        if (event.keyCode == '40' && emptyY > 0)
+            moveTile(emptyX, emptyY - 1, emptyX, emptyY, width, height);
+    });
+}
     
 function initTiles(tileWidth, tileHeight, dx, dy, navSize, message) {
     $('#canvas').css("width", tileWidth * dx);
@@ -107,6 +122,8 @@ function initTiles(tileWidth, tileHeight, dx, dy, navSize, message) {
                 addNav(i, j, i, j + 1, tileWidth, tileHeight, navSize);
         }
     }
+
+    initTileKeyHandler(dx, dy, tileWidth, tileHeight);
 }
 
 
