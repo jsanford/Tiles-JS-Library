@@ -1,0 +1,37 @@
+/* CANVAS */
+
+.canvas {
+    position: absolute;
+    background-color: #EEEEEE;
+    border: 2px solid #222222;
+    z-index: 0;
+}
+
+/* CONTENT */
+
+.content {
+    position: relative;
+    float: left;
+    background-color: #EEEEEE;
+    font-weight: bold;
+    z-index: 1;
+}
+
+
+/* NAVIGATION */
+
+.nav {
+    position: absolute;
+    background-color: #00FF00;
+    z-index: 5;
+}
+
+/* TILES */
+
+.tile {
+    position: absolute;
+    background-color: #FFFFFF;
+    border: 2px solid #222222;
+    z-index: 50;
+}
+
