@@ -13,14 +13,16 @@
  */
 
 var tiles = {};
+var solution = {};
 var emptyX, emptyY = 0;
 var animating = false;
+var successHandler = function() {};
 
 function moveTile(fx, fy, tx, ty, width, height) {
     if (animating || (fx == emptyX && fy == emptyY))
         return;
-    var fromName = fx + "" + fy;
-    var toName = tx + "" + ty;
+    var fromName = fx + "_" + fy;
+    var toName = tx + "_" + ty;
     var from = tiles[fromName];
     var to = tiles[toName];
     if (!from || to)
@@ -41,7 +43,7 @@ function moveTile(fx, fy, tx, ty, width, height) {
 }
 
 function addNav(fx, fy, tx, ty, width, height, navSize) {
-    var navName = fx + "" + fy + "-" + tx + "" + ty;
+    var navName = fx + "_" + fy + "-" + tx + "_" + ty;
     $('#canvas').append('<div id="' + navName + '" class="nav"></div>');
     var nav = $("#" + navName);
     var left = "";
@@ -70,19 +72,23 @@ function addNav(fx, fy, tx, ty, width, height, navSize) {
     nav.click(function(obj) {moveTile(fx, fy, tx, ty, width, height);});
 }
 
-function addTile(dx, dy, width, height, content) {
-    var tileName = dx + "" + dy;
+function addTile(dx, dy, width, height, content, image, offx, offy) {
+    var tileName = dx + "_" + dy;
     $('#canvas').append('<div id="' + tileName + '" class="tile">' + content + '</div>');
     var tile = $("#" + tileName);
+    if (image != null)
+        tile.css("background", "transparent url(" + image + ") no-repeat scroll -" + (offx * width) + "px -" + (offy * height) + "px");
     tile.css("left", dx * width);
     tile.css("top", dy * height);
     tile.css("width", width - 4);
     tile.css("height", height - 4)
     tiles[tileName] = tile;
+    solution[offx + "_" + offy] = tile;
 }
 
 function initTileKeyHandler(dx, dy, width, height) {
-    emptyX, emptyY = 0;
+    emptyX = 0;
+    emptyY = 0;
     $(document).keypress(function(event) {
         if (event.keyCode == '37' && emptyX < dx - 1)
             moveTile(emptyX + 1, emptyY, emptyX, emptyY, width, height);
@@ -94,23 +100,38 @@ function initTileKeyHandler(dx, dy, width, height) {
             moveTile(emptyX, emptyY - 1, emptyX, emptyY, width, height);
     });
 }
-    
-function initTiles(tileWidth, tileHeight, dx, dy, navSize, message) {
+
+function initTiles(tileWidth, tileHeight, dx, dy, navSize, message, image, handler) {
+    if (handler != null)
+        successHandler = handler;
+
     $('#canvas').css("width", tileWidth * dx);
     $('#canvas').css("height", tileHeight * dy);
     $('.content').css("width", tileWidth - navSize - 6);
     $('.content').css("height", tileHeight - navSize - 6);
     $('.content').css("padding", (navSize / 2) + 3);
 
+    var remaining = [];
+    for(var j=0; j < dy; j++) {
+        for(var i=0; i < dx; i++) {
+            var point = new Object();
+            point.x = i;
+            point.y = j;
+            remaining.push(point);
+        }
+    }
+
     var index = 0;
     for(var j=0; j < dy; j++) {
         for(var i=0; i < dx; i++) {
             if (i > 0 || j > 0) { 
                 var tileMessage = "";
-                if (index < message.length)
-                    tileMessage = message[index];
-                index += 1;
-                addTile(i, j, tileWidth, tileHeight, "<h1>" + tileMessage + "</h1>");
+                if (message != null && index < message.length)
+                    tileMessage = message[index++];
+                var rIndex = Math.floor(Math.random() * remaining.length);
+                var point = remaining[rIndex];
+                remaining[rIndex] = remaining.pop();
+                addTile(i, j, tileWidth, tileHeight, "<h1>" + tileMessage + "</h1>", image, point.x, point.y);
             }
             if (i > 0)
                 addNav(i, j, i - 1, j, tileWidth, tileHeight, navSize);
