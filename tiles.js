@@ -119,16 +119,15 @@ function initTilesKeyHandler(dx, dy, width, height) {
     });
 }
 
-function initTiles(tileWidth, tileHeight, dx, dy, borderWidth, navSize, message, image, handler) {
-    if (handler != null)
-        successHandler = handler;
-
+function initTilesCSS(tileWidth, tileHeight, dx, dy, navSize) {
     $('#canvas').css("width", tileWidth * dx);
     $('#canvas').css("height", tileHeight * dy);
     $('.content').css("width", tileWidth - navSize - 6);
     $('.content').css("height", tileHeight - navSize - 6);
     $('.content').css("padding", (navSize / 2) + 3);
+}
 
+function initTilesSolution(dx, dy) {
     var remaining = [];
     for(var i=0; i < dx; i++) {
         for(var j=0; j < dy; j++) {
@@ -140,7 +139,10 @@ function initTiles(tileWidth, tileHeight, dx, dy, borderWidth, navSize, message,
             }
         }
     }
+    return remaining;
+}
 
+function initTilesCanvas(tileWidth, tileHeight, dx, dy, borderWidth, navSize, message, image, remaining) {
     var index = 0;
     for(var j=0; j < dy; j++) {
         for(var i=0; i < dx; i++) {
@@ -167,7 +169,23 @@ function initTiles(tileWidth, tileHeight, dx, dy, borderWidth, navSize, message,
         }
     }
 
-    initTilesKeyHandler(dx, dy, tileWidth, tileHeight);
 }
 
+function initTiles(tileWidth, tileHeight, dx, dy, borderWidth, navSize, message, image, handler) {
+    // Initialize successHandler
+    if (handler != null)
+        successHandler = handler;
 
+    // Initialize css
+    initTilesCSS(tileWidth, tileHeight, dx, dy, navSize);
+
+    // Initialize solution
+    var remaining = initTilesSolution(dx, dy);
+
+
+    // Initialize canvas
+    initTilesCanvas(tileWidth, tileHeight, dx, dy, borderWidth, navSize, message, image, remaining);
+
+    // initialize key handler
+    initTilesKeyHandler(dx, dy, tileWidth, tileHeight);
+}
