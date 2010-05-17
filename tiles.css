@@ -31,7 +31,8 @@
 .tile {
     position: absolute;
     background-color: #FFFFFF;
-    border: 2px solid #444444;
+    border-color: #444444;
+    border-style: solid;
     z-index: 50;
 }
 

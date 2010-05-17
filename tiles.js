@@ -72,7 +72,7 @@ function addTileNav(fx, fy, tx, ty, width, height, navSize) {
     nav.click(function(obj) {moveTile(fx, fy, tx, ty, width, height);});
 }
 
-function addTile(dx, dy, width, height, content, image, offx, offy) {
+function addTile(dx, dy, width, height, borderWidth, content, image, offx, offy) {
     var tileName = dx + "_" + dy;
     $('#canvas').append('<div id="' + tileName + '" class="tile">' + content + '</div>');
     var tile = $("#" + tileName);
@@ -80,8 +80,14 @@ function addTile(dx, dy, width, height, content, image, offx, offy) {
         tile.css("background", "transparent url(" + image + ") no-repeat scroll -" + (offx * width) + "px -" + (offy * height) + "px");
     tile.css("left", dx * width);
     tile.css("top", dy * height);
-    tile.css("width", width - 4);
-    tile.css("height", height - 4)
+    if (navigator.appName == 'Microsoft Internet Explorer') {
+        tile.css("width", width);
+        tile.css("height", height);
+    } else {
+        tile.css("width", width - (2 * borderWidth));
+        tile.css("height", height - (2 * borderWidth));
+    }
+    tile.css("border-width", borderWidth);
     tiles[tileName] = tile;
     solution[offx + "_" + offy] = tile;
 }
@@ -89,7 +95,7 @@ function addTile(dx, dy, width, height, content, image, offx, offy) {
 function initTilesKeyHandler(dx, dy, width, height) {
     emptyX = 0;
     emptyY = 0;
-    $(document).keypress(function(event) {
+    $(document).keydown(function(event) {
         if (event.keyCode == '37' && emptyX < dx - 1)
             moveTile(emptyX + 1, emptyY, emptyX, emptyY, width, height);
         if (event.keyCode == '38' && emptyY < dy - 1)
@@ -101,7 +107,7 @@ function initTilesKeyHandler(dx, dy, width, height) {
     });
 }
 
-function initTiles(tileWidth, tileHeight, dx, dy, navSize, message, image, handler) {
+function initTiles(tileWidth, tileHeight, dx, dy, borderWidth, navSize, message, image, handler) {
     if (handler != null)
         successHandler = handler;
 
@@ -130,7 +136,7 @@ function initTiles(tileWidth, tileHeight, dx, dy, navSize, message, image, handl
                     tileMessage = message[index++];
                 var rIndex = Math.floor(Math.random() * remaining.length);
                 var point = remaining[rIndex];
-                addTile(i, j, tileWidth, tileHeight, "<h1>" + tileMessage + "</h1>", image, point.x, point.y);
+                addTile(i, j, tileWidth, tileHeight, borderWidth, "<h1>" + tileMessage + "</h1>", image, point.x, point.y);
                 if (rIndex < remaining.length - 1)
                     remaining[rIndex] = remaining.pop();
                 else
