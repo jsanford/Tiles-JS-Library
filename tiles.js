@@ -42,7 +42,7 @@ function moveTile(fx, fy, tx, ty, width, height) {
     );
 }
 
-function addNav(fx, fy, tx, ty, width, height, navSize) {
+function addTileNav(fx, fy, tx, ty, width, height, navSize) {
     var navName = fx + "_" + fy + "-" + tx + "_" + ty;
     $('#canvas').append('<div id="' + navName + '" class="nav"></div>');
     var nav = $("#" + navName);
@@ -86,7 +86,7 @@ function addTile(dx, dy, width, height, content, image, offx, offy) {
     solution[offx + "_" + offy] = tile;
 }
 
-function initTileKeyHandler(dx, dy, width, height) {
+function initTilesKeyHandler(dx, dy, width, height) {
     emptyX = 0;
     emptyY = 0;
     $(document).keypress(function(event) {
@@ -137,17 +137,17 @@ function initTiles(tileWidth, tileHeight, dx, dy, navSize, message, image, handl
                     remaining.pop();
             }
             if (i > 0)
-                addNav(i, j, i - 1, j, tileWidth, tileHeight, navSize);
+                addTileNav(i, j, i - 1, j, tileWidth, tileHeight, navSize);
             if (j > 0)
-                addNav(i, j, i, j - 1, tileWidth, tileHeight, navSize);
+                addTileNav(i, j, i, j - 1, tileWidth, tileHeight, navSize);
             if (i < dx - 1)
-                addNav(i, j, i + 1, j, tileWidth, tileHeight, navSize);
+                addTileNav(i, j, i + 1, j, tileWidth, tileHeight, navSize);
             if (j < dy - 1)
-                addNav(i, j, i, j + 1, tileWidth, tileHeight, navSize);
+                addTileNav(i, j, i, j + 1, tileWidth, tileHeight, navSize);
         }
     }
 
-    initTileKeyHandler(dx, dy, tileWidth, tileHeight);
+    initTilesKeyHandler(dx, dy, tileWidth, tileHeight);
 }
 
 
