@@ -14,7 +14,7 @@
     float: left;
     background-color: #EEEEEE;
     font-weight: bold;
-    z-index: 1;
+    z-index: 10;
 }
 
 
@@ -23,7 +23,7 @@
 .nav {
     position: absolute;
     background-color: #00FF00;
-    z-index: 5;
+    z-index: 30;
 }
 
 /* TILES */

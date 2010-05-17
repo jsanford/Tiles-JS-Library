@@ -18,6 +18,17 @@ var emptyX, emptyY = 0;
 var animating = false;
 var successHandler = function() {};
 
+function checkTilesSolution() {
+    if (solution[emptyX + "_" + emptyY] != null)
+        return;
+    var x = 0;
+    for (var loc in solution) {
+        if (tiles[loc] != solution[loc])
+           return;
+    }
+    successHandler();
+}
+
 function moveTile(fx, fy, tx, ty, width, height) {
     if (animating || (fx == emptyX && fy == emptyY))
         return;
@@ -38,6 +49,7 @@ function moveTile(fx, fy, tx, ty, width, height) {
             emptyX = fx;
             emptyY = fy;
             animating = false;
+            checkTilesSolution();
         }
     );
 }
@@ -120,10 +132,12 @@ function initTiles(tileWidth, tileHeight, dx, dy, borderWidth, navSize, message,
     var remaining = [];
     for(var i=0; i < dx; i++) {
         for(var j=0; j < dy; j++) {
-            var point = new Object();
-            point.x = i;
-            point.y = j;
-            remaining.push(point);
+            if (i > 0 || j > 0) {
+                var point = new Object();
+                point.x = i;
+                point.y = j;
+                remaining.push(point);
+            }
         }
     }
 
