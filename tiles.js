@@ -112,8 +112,8 @@ function initTiles(tileWidth, tileHeight, dx, dy, navSize, message, image, handl
     $('.content').css("padding", (navSize / 2) + 3);
 
     var remaining = [];
-    for(var j=0; j < dy; j++) {
-        for(var i=0; i < dx; i++) {
+    for(var i=0; i < dx; i++) {
+        for(var j=0; j < dy; j++) {
             var point = new Object();
             point.x = i;
             point.y = j;
@@ -130,8 +130,11 @@ function initTiles(tileWidth, tileHeight, dx, dy, navSize, message, image, handl
                     tileMessage = message[index++];
                 var rIndex = Math.floor(Math.random() * remaining.length);
                 var point = remaining[rIndex];
-                remaining[rIndex] = remaining.pop();
                 addTile(i, j, tileWidth, tileHeight, "<h1>" + tileMessage + "</h1>", image, point.x, point.y);
+                if (rIndex < remaining.length - 1)
+                    remaining[rIndex] = remaining.pop();
+                else
+                    remaining.pop();
             }
             if (i > 0)
                 addNav(i, j, i - 1, j, tileWidth, tileHeight, navSize);
