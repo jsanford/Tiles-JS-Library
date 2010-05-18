@@ -19,11 +19,10 @@ var animating = false;
 var successHandler = function() {};
 
 function checkTilesSolution() {
-    if (solution[emptyX + "_" + emptyY] != null)
-        return;
     var x = 0;
     for (var loc in solution) {
-        if (tiles[loc] != solution[loc])
+        var tile = tiles[solution[loc]];
+        if (tile == null || tile[0].id != loc)
            return;
     }
     successHandler();
@@ -101,7 +100,7 @@ function addTile(dx, dy, width, height, borderWidth, content, image, offx, offy)
     }
     tile.css("border-width", borderWidth);
     tiles[tileName] = tile;
-    solution[offx + "_" + offy] = tile;
+    solution[tileName] = offx + "_" + offy;
 }
 
 function initTilesKeyHandler(dx, dy, width, height) {
@@ -119,15 +118,7 @@ function initTilesKeyHandler(dx, dy, width, height) {
     });
 }
 
-function initTilesCSS(tileWidth, tileHeight, dx, dy, navSize) {
-    $('#canvas').css("width", tileWidth * dx);
-    $('#canvas').css("height", tileHeight * dy);
-    $('.content').css("width", tileWidth - navSize - 6);
-    $('.content').css("height", tileHeight - navSize - 6);
-    $('.content').css("padding", (navSize / 2) + 3);
-}
-
-function initTilesSolution(dx, dy) {
+function generateTileLocations(dx, dy) {
     var remaining = [];
     for(var i=0; i < dx; i++) {
         for(var j=0; j < dy; j++) {
@@ -142,7 +133,14 @@ function initTilesSolution(dx, dy) {
     return remaining;
 }
 
-function initTilesCanvas(tileWidth, tileHeight, dx, dy, borderWidth, navSize, message, image, remaining) {
+function initTilesCanvas(tileWidth, tileHeight, dx, dy, borderWidth, navSize, message, image) {
+    $('#canvas').css("width", tileWidth * dx);
+    $('#canvas').css("height", tileHeight * dy);
+    $('.content').css("width", tileWidth - navSize - 6);
+    $('.content').css("height", tileHeight - navSize - 6);
+    $('.content').css("padding", (navSize / 2) + 3);
+
+    var remaining = generateTileLocations(dx, dy);
     var index = 0;
     for(var j=0; j < dy; j++) {
         for(var i=0; i < dx; i++) {
@@ -169,22 +167,56 @@ function initTilesCanvas(tileWidth, tileHeight, dx, dy, borderWidth, navSize, me
         }
     }
 
+    verifyTilesSolvable(tileWidth, tileHeight);
+}
+
+function verifyTilesSolvable(tileWidth, tileHeight) {
+    // verify that the generated puzzle is solvable
+    var found = {}; 
+    var total = 0;
+    for (var loc in solution) {
+       if (found[loc] == null) {
+          var loopCount = 0;
+          var next = loc;
+          do {
+             found[next] = true;
+             next = solution[next];
+             loopCount++;
+          } while (next != loc);
+          total += loopCount - 1;
+       }
+    }
+    // if the puzzle isn't solvable, fix it 
+    if (total % 2 != 0) {
+        fixTiles(tileWidth, tileHeight);
+    }
+}
+
+function fixTiles(tileWidth, tileHeight) {
+    var tile1Name = "0_1";
+    var tile2Name = "1_0";
+    var tile1 = tiles[tile1Name];
+    var tile2 = tiles[tile2Name];
+    tile1.css("top", 0);
+    tile1.css("left", tileWidth);
+    tile2.css("top", tileHeight);
+    tile2.css("left", 0);
+    tiles[tile1Name] = tile2;
+    tiles[tile2Name] = tile1;
 }
 
 function initTiles(tileWidth, tileHeight, dx, dy, borderWidth, navSize, message, image, handler) {
+    if (tileWidth < 2 || tileHeight < 2) {
+        alert("Tiles not initialized properly");
+        return;
+    }
+
     // Initialize successHandler
     if (handler != null)
         successHandler = handler;
 
-    // Initialize css
-    initTilesCSS(tileWidth, tileHeight, dx, dy, navSize);
-
-    // Initialize solution
-    var remaining = initTilesSolution(dx, dy);
-
-
     // Initialize canvas
-    initTilesCanvas(tileWidth, tileHeight, dx, dy, borderWidth, navSize, message, image, remaining);
+    initTilesCanvas(tileWidth, tileHeight, dx, dy, borderWidth, navSize, message, image);
 
     // initialize key handler
     initTilesKeyHandler(dx, dy, tileWidth, tileHeight);
