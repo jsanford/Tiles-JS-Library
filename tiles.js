@@ -107,14 +107,19 @@ function initTilesKeyHandler(dx, dy, width, height) {
     emptyX = 0;
     emptyY = 0;
     $(document).keydown(function(event) {
+        var preventDefault = true;
         if (event.keyCode == '37' && emptyX < dx - 1)
             moveTile(emptyX + 1, emptyY, emptyX, emptyY, width, height);
-        if (event.keyCode == '38' && emptyY < dy - 1)
+        else if (event.keyCode == '38' && emptyY < dy - 1)
             moveTile(emptyX, emptyY + 1, emptyX, emptyY, width, height);
-        if (event.keyCode == '39' && emptyX > 0)
+        else if (event.keyCode == '39' && emptyX > 0)
             moveTile(emptyX - 1, emptyY, emptyX, emptyY, width, height);
-        if (event.keyCode == '40' && emptyY > 0)
+        else if (event.keyCode == '40' && emptyY > 0)
             moveTile(emptyX, emptyY - 1, emptyX, emptyY, width, height);
+        else
+            preventDefault = false;
+        if (preventDefault)
+            event.preventDefault();
     });
 }
 
