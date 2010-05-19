@@ -138,9 +138,15 @@ function generateTileLocations(dx, dy) {
     return remaining;
 }
 
-function initTilesCanvas(tileWidth, tileHeight, dx, dy, borderWidth, navSize, message, image) {
-    $('#canvas').css("width", tileWidth * dx);
-    $('#canvas').css("height", tileHeight * dy);
+function initTilesCanvas(tileWidth, tileHeight, dx, dy, borderWidth, navSize, randomize, message, image) {
+    if (navigator.appName == 'Microsoft Internet Explorer') {
+        $('#canvas').css("width", (tileWidth * dx) + (borderWidth * 2));
+        $('#canvas').css("height", (tileHeight * dy) + (borderWidth * 2));
+    } else {
+        $('#canvas').css("width", tileWidth * dx);
+        $('#canvas').css("height", tileHeight * dy);
+    }
+    $('#canvas').css("border-width", borderWidth);
     $('.content').css("width", tileWidth - navSize - 6);
     $('.content').css("height", tileHeight - navSize - 6);
     $('.content').css("padding", (navSize / 2) + 3);
@@ -152,8 +158,11 @@ function initTilesCanvas(tileWidth, tileHeight, dx, dy, borderWidth, navSize, me
             if (i > 0 || j > 0) { 
                 var tileMessage = "";
                 if (message != null && index < message.length)
-                    tileMessage = message[index++];
-                var rIndex = Math.floor(Math.random() * remaining.length);
+                    tileMessage = message.substring(index, index + 1);
+                index++;
+                var rIndex = 0;
+                if (randomize)
+                    rIndex = Math.floor(Math.random() * remaining.length);
                 var point = remaining[rIndex];
                 addTile(i, j, tileWidth, tileHeight, borderWidth, "<h1>" + tileMessage + "</h1>", image, point.x, point.y);
                 if (rIndex < remaining.length - 1)
@@ -172,7 +181,8 @@ function initTilesCanvas(tileWidth, tileHeight, dx, dy, borderWidth, navSize, me
         }
     }
 
-    verifyTilesSolvable(tileWidth, tileHeight);
+    if (randomize)
+        verifyTilesSolvable(tileWidth, tileHeight);
 }
 
 function verifyTilesSolvable(tileWidth, tileHeight) {
@@ -210,18 +220,18 @@ function fixTiles(tileWidth, tileHeight) {
     tiles[tile2Name] = tile1;
 }
 
-function initTiles(tileWidth, tileHeight, dx, dy, borderWidth, navSize, message, image, handler) {
+function initTiles(tileWidth, tileHeight, dx, dy, borderWidth, navSize, randomize, message, image, handler) {
     if (tileWidth < 2 || tileHeight < 2) {
         alert("Tiles not initialized properly");
         return;
     }
 
     // Initialize successHandler
-    if (handler != null)
+    if (handler != null && randomize)
         successHandler = handler;
 
     // Initialize canvas
-    initTilesCanvas(tileWidth, tileHeight, dx, dy, borderWidth, navSize, message, image);
+    initTilesCanvas(tileWidth, tileHeight, dx, dy, borderWidth, navSize, randomize, message, image);
 
     // initialize key handler
     initTilesKeyHandler(dx, dy, tileWidth, tileHeight);
