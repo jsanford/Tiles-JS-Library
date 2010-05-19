@@ -24,6 +24,7 @@
     position: absolute;
     background-color: #00FF00;
     z-index: 30;
+    line-height: 0pt;
 }
 
 /* TILES */

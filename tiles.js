@@ -55,21 +55,21 @@ function moveTile(fx, fy, tx, ty, width, height) {
 
 function addTileNav(fx, fy, tx, ty, width, height, navSize) {
     var navName = fx + "_" + fy + "-" + tx + "_" + ty;
-    $('#canvas').append('<div id="' + navName + '" class="nav"></div>');
+    $('#canvas').append('<div id="' + navName + '" class="nav">&nbsp;</div>');
     var nav = $("#" + navName);
     var left = "";
     var top = "";
     var navWidth = navSize;
     var navHeight = navSize;
     if (fx == tx) {
-        navHeight = navSize / 2;
+        navHeight = (navSize + 1) / 2;
         left = (fx * width) + (width / 2) - (navWidth / 2);
         if (fy > ty)
             top = (fy * height) - navHeight;
         else
             top = ty * height;
     } else {
-        navWidth = navSize / 2;
+        navWidth = (navSize + 1) / 2;
         top = (fy * height) + (height / 2) - (navHeight / 2);
         if (fx > tx)
             left = (fx * width) - navWidth;
@@ -147,8 +147,13 @@ function initTilesCanvas(tileWidth, tileHeight, dx, dy, borderWidth, navSize, ra
         $('#canvas').css("height", tileHeight * dy);
     }
     $('#canvas').css("border-width", borderWidth);
-    $('.content').css("width", tileWidth - navSize - 6);
-    $('.content').css("height", tileHeight - navSize - 6);
+    if (navigator.appName == 'Microsoft Internet Explorer') {
+        $('.content').css("width", tileWidth);
+        $('.content').css("height", tileHeight);
+    } else {
+        $('.content').css("width", tileWidth - navSize - 6);
+        $('.content').css("height", tileHeight - navSize - 6);
+    }
     $('.content').css("padding", (navSize / 2) + 3);
 
     var remaining = generateTileLocations(dx, dy);
