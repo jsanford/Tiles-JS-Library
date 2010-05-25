@@ -59,17 +59,17 @@ function addTileNav(fx, fy, tx, ty, width, height, navSize) {
     var nav = $("#" + navName);
     var left = "";
     var top = "";
-    var navWidth = navSize;
-    var navHeight = navSize;
+    var navWidth = navSize * 2;
+    var navHeight = navSize * 2;
     if (fx == tx) {
-        navHeight = (navSize + 1) / 2;
+        navHeight = navSize;
         left = (fx * width) + (width / 2) - (navWidth / 2);
         if (fy > ty)
             top = (fy * height) - navHeight;
         else
             top = ty * height;
     } else {
-        navWidth = (navSize + 1) / 2;
+        navWidth = navSize;
         top = (fy * height) + (height / 2) - (navHeight / 2);
         if (fx > tx)
             left = (fx * width) - navWidth;
@@ -151,10 +151,10 @@ function initTilesCanvas(tileWidth, tileHeight, dx, dy, borderWidth, navSize, ra
         $('.content').css("width", tileWidth);
         $('.content').css("height", tileHeight);
     } else {
-        $('.content').css("width", tileWidth - navSize - 6);
-        $('.content').css("height", tileHeight - navSize - 6);
+        $('.content').css("width", tileWidth - (navSize * 2) - 6);
+        $('.content').css("height", tileHeight - (navSize * 2) - 6);
     }
-    $('.content').css("padding", (navSize / 2) + 3);
+    $('.content').css("padding", navSize + 3);
 
     var remaining = generateTileLocations(dx, dy);
     var index = 0;
